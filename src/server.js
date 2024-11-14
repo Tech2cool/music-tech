@@ -21,17 +21,14 @@ app.get("/search/:type?", async (req, res) => {
     } else if (type === "ARTIST") {
       const resp = await ytmusic.searchArtists(query);
       return res.send({ data: resp });
+    } else if (type === "PLAYLIST") {
+      const resp = await ytmusic.searchPlaylists(query);
+      return res.send({ data: resp });
     } else if (type === "VIDEO") {
       const resp = await ytmusic.searchVideos(query);
       return res.send({ data: resp });
     }
-
     const resp = await ytmusic.search(query);
-    // const resp2 = await ytmusic.searchVideos(query);
-    // const resp2 = await ytmusic.searchPlaylists(query);
-    // const resp2 = await ytmusic.searchAlbums(query);
-    // const resp2 = await ytmusic.searchArtists(query);
-    // const resp2 = await ytmusic.getSearchSuggestions(query);
     return res.send({ data: resp });
   } catch (error) {
     return res.send(error);
@@ -40,29 +37,47 @@ app.get("/search/:type?", async (req, res) => {
 
 app.get("/", async (req, res) => {
   try {
-    const resp = await ytmusic.search(req.query.query);
-    res.send(resp);
+    res.json({ message: "welcome" });
   } catch (error) {
     res.send(error);
   }
 });
 
-app.get("/songs", async (req, res) => {
+app.get("/playlist/:id", async (req, res) => {
   try {
-    const resp = await ytmusic.searchSongs(req.query.query);
-    // const respPlayList = await ytmusic.searchPlaylists(req.query.query);
+    const id = req.params.id;
+    if (!id) return res.status(401).send({ message: "No id Provided" });
+
+    const respSuggestion = await ytmusic.getPlaylistVideos(id);
 
     res.send({
-      data: resp,
-      //   playlist: respPlayList,
+      data: respSuggestion,
     });
   } catch (error) {
     res.send(error);
   }
 });
-app.get("/playlist/:id", async (req, res) => {
+
+app.get("/artist/:id", async (req, res) => {
   try {
-    const respSuggestion = await ytmusic.getPlaylistVideos(req.params.id);
+    const id = req.params.id;
+    if (!id) return res.status(401).send({ message: "No id Provided" });
+
+    const respSuggestion = await ytmusic.getArtist(id);
+
+    res.send({
+      data: respSuggestion,
+    });
+  } catch (error) {
+    res.send(error);
+  }
+});
+app.get("/album/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (!id) return res.status(401).send({ message: "No id Provided" });
+
+    const respSuggestion = await ytmusic.getAlbum(id);
 
     res.send({
       data: respSuggestion,
@@ -74,10 +89,11 @@ app.get("/playlist/:id", async (req, res) => {
 
 app.get("/song/:id", async (req, res) => {
   try {
-    const resp = await ytmusic.s(req.params.id);
-    res.send(resp);
+    if (!id) return res.status(401).send({ message: "No id Provided" });
+    const resp = await ytmusic.getSong(req.params.id);
+    return res.send(resp);
   } catch (error) {
-    res.send(error);
+    return res.send(error);
   }
 });
 
