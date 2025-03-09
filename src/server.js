@@ -43,6 +43,20 @@ app.get("/", async (req, res) => {
   }
 });
 
+app.get("/home", async (req, res) => {
+  try {
+    const respSuggestion = await ytmusic.getHomeSections();
+    const filteredNulls = respSuggestion.filter(
+      (ele) => ele.contents.some((cle) => cle !== null) // Keep `ele` only if it has at least one non-null value in `contents`
+    );
+    res.send({
+      data: filteredNulls,
+    });
+  } catch (error) {
+    res.send(error);
+  }
+});
+
 app.get("/playlist/:id", async (req, res) => {
   try {
     const id = req.params.id;
@@ -97,4 +111,4 @@ app.get("/song/:id", async (req, res) => {
   }
 });
 
-app.listen(8080, () => console.log("listining on port 8080"));
+app.listen(8082, "0.0.0.0", () => console.log("listining on port 8082"));
