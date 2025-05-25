@@ -10,6 +10,9 @@ async function getYtMusicClient(clientRegion = "IN", clientLanguage = "en") {
   await ytmusic.initialize({
     GL: clientRegion, // Defaults to 'IN' if no clientRegion provided
     HL: clientLanguage, // Defaults to 'en'
+    //     GL: "IN",
+    // HL: "en",
+    cookies: "PREF=f1=50000000", // Just an example, you need an actual cookie from India
   });
   return ytmusic;
 }
