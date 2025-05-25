@@ -5,8 +5,19 @@ import cors from "cors";
 const app = express();
 app.use(express.json());
 app.use(cors());
-const ytmusic = new YTMusic();
-await ytmusic.initialize();
+async function getYtMusicClient(clientRegion = "IN", clientLanguage = "en") {
+  const ytmusic = new YTMusic();
+  await ytmusic.initialize({
+    GL: clientRegion, // Defaults to 'IN' if no clientRegion provided
+    HL: clientLanguage, // Defaults to 'en'
+  });
+  return ytmusic;
+}
+
+const ytmusic = await getYtMusicClient(); // defaults to IN + en
+
+// const ytmusic = new YTMusic();
+// await ytmusic.initialize();
 
 app.get("/search/:type?", async (req, res) => {
   const { type } = req.params;
