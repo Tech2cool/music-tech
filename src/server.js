@@ -125,4 +125,14 @@ app.get("/song/:id", async (req, res) => {
   }
 });
 
+app.get("/up-next/:id", async (req, res) => {
+  try {
+    if (!id) return res.status(401).send({ message: "No id Provided" });
+    const resp = await ytmusic.getUpNexts(id);
+    return res.send(resp);
+  } catch (error) {
+    return res.send(error);
+  }
+});
+
 app.listen(8082, "0.0.0.0", () => console.log("listining on port 8082"));
