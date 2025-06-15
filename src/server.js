@@ -142,9 +142,9 @@ app.get("/up-next/:id", async (req, res) => {
 
 app.get("/version", async (req, res) => {
   try {
-    const existingRecord = await AppModel.find({});
+    const existingRecord = await AppModel.findOne({});
     // const existingRecord = await URL.findOne({});
-    return res.send(existingRecord);
+    return res.send({ data: existingRecord });
   } catch (error) {
     return res.send(error);
   }
