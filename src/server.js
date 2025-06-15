@@ -1,6 +1,11 @@
 import express from "express";
 import YTMusic from "ytmusic-api";
 import cors from "cors";
+import "dotenv/config";
+
+import AppModel from "./appSchema.js";
+import db from "./db.js";
+db.connectDB();
 
 const app = express();
 app.use(express.json());
@@ -130,6 +135,16 @@ app.get("/up-next/:id", async (req, res) => {
     if (!id) return res.status(401).send({ message: "No id Provided" });
     const resp = await ytmusic.getUpNexts(id);
     return res.send(resp);
+  } catch (error) {
+    return res.send(error);
+  }
+});
+
+app.get("/version", async (req, res) => {
+  try {
+    const existingRecord = await AppModel.find({});
+    // const existingRecord = await URL.findOne({});
+    return res.send(existingRecord);
   } catch (error) {
     return res.send(error);
   }
